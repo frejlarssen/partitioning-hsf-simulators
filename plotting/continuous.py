@@ -50,10 +50,7 @@ def T_CP_APP_cont_suff(T_c, rho, D, B, n, m_O1, m_O2, m_O3):
 # time-cp-continuous_litterature original
 def T_CP_APP_cont_litterature(T_c, rho, D, B, n, m_O1, m_O2, m_O3):
     sqrt_n = np.sqrt(n)
-    #clock = rho ** (B*sqrt_n*(m_O2 + m_O3)) * 2**(n/2+1) * T_c
-
-    #Did they forget the D*n factor?
-    clock = rho ** (B*sqrt_n*(m_O2 + m_O3)) *D*n* 2**(n/2) * T_c
+    clock = rho ** (B*sqrt_n*(m_O2 + m_O3)) * 2**(n/2+1) * T_c
     return (rho ** (B*sqrt_n*(m_O1)) * clock, clock)
 
 # Takes m, f and c and calculates cor:time-cp-continuous
@@ -131,6 +128,39 @@ def cmp_Tfuncs_clock(T_c, rho, D, B, n, m, f, c,
     plt.savefig("./continuous_plots/" + filename)
     plt.show()
 
+def NCP_vs_mO2():
+    # Constants (arbitrary but should be about reasonable scale)
+    T_c = 1.0e-08 # on laptop
+    rho = 2
+    D   = 0.6
+    B   = 0.24
+    n   = 40
+    m   = 20
+    f   = [0.08, 0.2,0.4,0.6,0.8,1.0]
+    c   = 16
+
+    sqrt_n = np.sqrt(n)
+    m_O1_list = [math.log(c / fi, rho) / (B * sqrt_n) for fi in f]
+
+    plt.figure(figsize=(10, 6))
+
+    for i, (fi, m_O1) in enumerate(zip(f, m_O1_list)):
+        m_O2 = np.linspace(1, m - m_O1, 500)
+        m_O3 = m - m_O1 - m_O2
+        (_, clock_values) = T_CP_APP_cont(T_c, rho, D, B, n, m_O1, m_O2, m_O3)
+        plt.plot(m_O2, clock_values, label=fr'$f={fi}$', linestyle='--')
+
+    plt.xlabel(r'$m_{\Omega_2}$')
+    plt.ylabel(r'$T (s)$')
+    plt.yscale('linear')
+    plt.grid(True)
+    plt.legend()
+    plt.tight_layout()
+    filename = f"T_CP_APP-vs-mO2-T_c{T_c}-rho{rho}-D{D}-B{B}-n{n}-m{m}-f{'_'.join(str(fi) for fi in f)}-c{c}.pdf"
+    plt.savefig("./continuous_plots/" + filename)
+    plt.show()
+
+
 # Plotting T_SA and T_NCP as a function of m, full fidelity
 # parallelization on c cores on T_NCP
 def SA_and_NCP_vs_m():
@@ -149,6 +179,22 @@ def SA_and_NCP_vs_m():
                      T_SA_APP_cont_mfc, r'$T_{SA\_APP}$', T_NCP_APP_cont_mfc, r'$T_{NCP\_APP}$',
                      yscale='log')
 
+def SA_and_NCP_vs_n():
+    # Constants (arbitrary but should be about reasonable scale)
+    T_c = 1.0e-08 # on laptop
+    rho = 2
+    D   = 0.6
+    B   = 0.24
+    n_values = np.linspace(1, 60, 500)
+    m   = 30
+    f   = 1
+    c   = 16
+
+    cmp_Tfuncs_clock(T_c, rho, D, B, n_values, m, f, c,
+                     n_values, r'$n$',
+                     T_SA_APP_cont_mfc, r'$T_{SA\_APP}$', T_NCP_APP_cont_mfc, r'$T_{NCP\_APP}$',
+                     yscale='log')
+
 def NCP_and_CP_vs_m():
     T_c = 1.0e-08
     rho = 2
@@ -156,7 +202,7 @@ def NCP_and_CP_vs_m():
     B   = 0.24
     n   = 40
     m_values = np.linspace(15, 35, 500)
-    f   = 0.00001
+    f   = 0.00001 #TODO: Cange to about 0.05
     c   = 16
     cmp_Tfuncs_clock(T_c, rho, D, B, n, m_values, f, c,
                      m_values, r'$m$',
@@ -180,5 +226,9 @@ def NCP_and_CP_vs_n():
                      T_CP_APP_cont_mfc_suff, r'$T_{CP\_APP\_suff}$', T_CP_APP_cont_mfc_litterature, r'$T_{CP\_APP\_lit}$',
                      yscale='log')
 
+
 #SA_and_NCP_vs_m()
-NCP_and_CP_vs_n()
+#SA_and_NCP_vs_n()
+NCP_vs_mO2()
+#NCP_and_CP_vs_m()
+#NCP_and_CP_vs_n()
