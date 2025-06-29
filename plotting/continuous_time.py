@@ -41,16 +41,12 @@ def T_CP_APP_cont(T_c, rho, D, B, n, m_O1, m_O2, m_O3):
     clock = (m_O1 + rho ** (B*sqrt_n*(m_O2)) * m_O2 + rho ** (B*sqrt_n*(m_O2 + m_O3)) * m_O3) * D*n * 2**(n/2) * T_c
     return (rho ** (B*sqrt_n*(m_O1)) * clock, clock)
 
-# cor:time-cp-continuous but only suffix
-def T_CP_APP_cont_suff(T_c, rho, D, B, n, m_O1, m_O2, m_O3):
-    sqrt_n = np.sqrt(n)
-    clock = (rho ** (B*sqrt_n*(m_O2 + m_O3)) * m_O3) * D*n * 2**(n/2) * T_c
-    return (rho ** (B*sqrt_n*(m_O1)) * clock, clock)
-
 # time-cp-continuous_litterature original
 def T_CP_APP_cont_litterature(T_c, rho, D, B, n, m_O1, m_O2, m_O3):
     sqrt_n = np.sqrt(n)
-    clock = rho ** (B*sqrt_n*(m_O2 + m_O3)) * 2**(n/2+1) * T_c
+    n_const = 40
+    C_SFA_inv = D*n_const*T_c
+    clock = rho ** (B*sqrt_n*(m_O2 + m_O3)) * 2**(n/2+1) * C_SFA_inv
     return (rho ** (B*sqrt_n*(m_O1)) * clock, clock)
 
 # Takes m, f and c and calculates cor:time-cp-continuous
@@ -202,12 +198,12 @@ def NCP_and_CP_vs_m():
     B   = 0.24
     n   = 40
     m_values = np.linspace(15, 35, 500)
-    f   = 0.00001 #TODO: Cange to about 0.05
+    f   = 0.05
     c   = 16
     cmp_Tfuncs_clock(T_c, rho, D, B, n, m_values, f, c,
                      m_values, r'$m$',
                      T_NCP_APP_cont_mfc, r'$T_{NCP\_APP}$', T_CP_APP_cont_mfc, r'$T_{CP\_APP}$',
-                     T_CP_APP_cont_mfc_suff, r'$T_{CP\_APP\_suff}$', T_CP_APP_cont_mfc_litterature, r'$T_{CP\_APP\_lit}$',
+                    T_CP_APP_cont_mfc_litterature, r'$T_{CP\_APP\_lit}$',
                      yscale='log')
 
 
@@ -218,17 +214,17 @@ def NCP_and_CP_vs_n():
     B   = 0.24
     n_values = np.linspace(15, 50, 500)
     m   = 30
-    f   = 0.00001
+    f   = 0.05
     c   = 16
     cmp_Tfuncs_clock(T_c, rho, D, B, n_values, m, f, c,
                      n_values, r'$n$',
                      T_NCP_APP_cont_mfc, r'$T_{NCP\_APP}$', T_CP_APP_cont_mfc, r'$T_{CP\_APP}$',
-                     T_CP_APP_cont_mfc_suff, r'$T_{CP\_APP\_suff}$', T_CP_APP_cont_mfc_litterature, r'$T_{CP\_APP\_lit}$',
+                     T_CP_APP_cont_mfc_litterature, r'$T_{CP\_APP\_lit}$',
                      yscale='log')
 
 
 #SA_and_NCP_vs_m()
 #SA_and_NCP_vs_n()
-NCP_vs_mO2()
-#NCP_and_CP_vs_m()
-#NCP_and_CP_vs_n()
+#NCP_vs_mO2()
+NCP_and_CP_vs_m()
+NCP_and_CP_vs_n()
