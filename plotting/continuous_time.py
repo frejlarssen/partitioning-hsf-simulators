@@ -38,7 +38,7 @@ def T_NCP_APP_cont_mfc(T_c, rho, D, B, n, m, f, c):
 # cor:time-cp-continuous
 def T_CP_APP_cont(T_c, rho, D, B, n, m_O1, m_O2, m_O3):
     sqrt_n = np.sqrt(n)
-    clock = (m_O1 + rho ** (B*sqrt_n*(m_O2)) * m_O2 + rho ** (B*sqrt_n*(m_O2 + m_O3)) * m_O3) * D*n * 2**(n/2) * T_c
+    clock = (m_O1 + rho ** (B*sqrt_n*(m_O2)) * m_O2 + rho ** (B*sqrt_n*(m_O2 + m_O3)) * m_O3) * (D*n + B*sqrt_n) * 2**(n/2) * T_c
     return (rho ** (B*sqrt_n*(m_O1)) * clock, clock)
 
 # time-cp-continuous_litterature original
@@ -124,7 +124,7 @@ def cmp_Tfuncs_clock(T_c, rho, D, B, n, m, f, c,
     plt.savefig("./continuous_plots/" + filename)
     plt.show()
 
-def NCP_vs_mO2():
+def CP_vs_mO2():
     # Constants (arbitrary but should be about reasonable scale)
     T_c = 1.0e-08 # on laptop
     rho = 2
@@ -225,6 +225,6 @@ def NCP_and_CP_vs_n():
 
 #SA_and_NCP_vs_m()
 #SA_and_NCP_vs_n()
-#NCP_vs_mO2()
+#CP_vs_mO2()
 #NCP_and_CP_vs_m()
 #NCP_and_CP_vs_n()
