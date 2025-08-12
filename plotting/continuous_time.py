@@ -27,7 +27,7 @@ def T_SA_APP_cont_mfc(T_c, rho, D, B, n, m, f, c):
 # cor:time-ncp-continuous
 def T_NCP_APP_cont(T_c, rho, D, B, n, m, c):
     sqrt_n = np.sqrt(n)
-    coreh = rho ** (B*sqrt_n*m) * D * n * m * 2**(n/2) * T_c
+    coreh = rho ** (B*sqrt_n*m) * (D * n + B * sqrt_n) * m * 2**(n/2) * T_c
     return (coreh, coreh / c)
 
 # Takes m, f and c and calculates cor:time-ncp-continuous
@@ -182,7 +182,7 @@ def SA_and_NCP_vs_n():
     D   = 0.6
     B   = 0.24
     n_values = np.linspace(1, 60, 500)
-    m   = 30
+    m   = 13
     f   = 1
     c   = 16
 
@@ -226,5 +226,5 @@ def NCP_and_CP_vs_n():
 #SA_and_NCP_vs_m()
 #SA_and_NCP_vs_n()
 #NCP_vs_mO2()
-NCP_and_CP_vs_m()
-NCP_and_CP_vs_n()
+#NCP_and_CP_vs_m()
+#NCP_and_CP_vs_n()
